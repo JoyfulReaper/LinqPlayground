@@ -2,6 +2,7 @@
 
 using LinqPlayground.ExampleClasses;
 using System.Collections;
+using System.Threading.Tasks.Dataflow;
 
 internal class Program
 {
@@ -9,11 +10,192 @@ internal class Program
     {
         //WhatIsLinq();
         //WhyLinq();
-        //LinqWhere();
-        //LinqOfType();
-        OrderBy();
+        //Where();
+        //OfType();
+        //OrderBy();
+        //ThenBy();
+        //GroupBy();
+        Join();
     }
 
+    private static void Join()
+    {
+        // Join: Joins two sequences to product a result - Returns a new collection that contains elements from both the collections which satisfies the specified expression. Same as SQL inner join (Matching values on both tables)
+        // GroupJoin: Joins two sequence based on keys and returns groups of sequences. Like Left Outer Join in SQL (All records on left table, matching records from left table)
+        IList<string> strList1 = new List<string>() {
+            "One",
+            "Two",
+            "Three",
+            "Four"
+        };
+
+        IList<string> strlist2 = new List<string>() {
+            "One",
+            "Two",
+            "Five",
+            "Six"
+        };
+
+        var innerJoin = strList1.Join(strlist2, // inner
+                                        str1 => str1, // Outer key selector
+                                         str2 => str2, // Inner key selector
+                                         (str1, str2) => str1); // Result selector (selecting just str1)
+
+
+        ///////////////////////////
+
+        IList<Student> studentList = new List<Student>() {
+            new Student() { StudentId = 1, StudentName = "John", StandardId =1 },
+            new Student() { StudentId = 2, StudentName = "Moin", StandardId =1 },
+            new Student() { StudentId = 3, StudentName = "Bill", StandardId =2 },
+            new Student() { StudentId = 4, StudentName = "Ram" , StandardId =2 },
+            new Student() { StudentId = 5, StudentName = "Ron"  }
+        };
+
+        IList<Standard> standardList = new List<Standard>() {
+            new Standard(){ StandardId = 1, StandardName="Standard 1"},
+            new Standard(){ StandardId = 2, StandardName="Standard 2"},
+            new Standard(){ StandardId = 3, StandardName="Standard 3"}
+        };
+
+        // studentList is outer sequence because the query starts from it
+        // First parameter is the inner sequence
+        // Second and third parameter specifies a field whose value should match using a lambda expression in order to include that element in the result (must match for element to be included in match)
+        // -- In this example the outer key selector student.StandardId must match the inner sequence key standard.StandardId. If both of the values of the key match them include the element in the result
+        // Fourth parameter is an expression to formulate the result
+        var innerJoin2 = studentList.Join( // Outer sequence (studentList)
+                                            standardList, // inner sequence 
+                                            s => s.StandardId, // outer key selector
+                                            s => s.StandardId, // inner key selector
+                                            (student, standard) => new // Result selector
+                                            { 
+                                                StudentName = student.StudentName,
+                                                StandardName = standard.StandardName
+                                            });
+
+        foreach (var student in innerJoin2)
+        {
+            Console.WriteLine($"{student.StudentName} {student.StandardName}");
+        }
+
+        // Join query Syntax
+        IList<Student> studentList2 = new List<Student>() {
+            new Student() { StudentId = 1, StudentName = "John", Age = 13, StandardId =1 },
+            new Student() { StudentId = 2, StudentName = "Moin",  Age = 21, StandardId =1 },
+            new Student() { StudentId = 3, StudentName = "Bill",  Age = 18, StandardId =2 },
+            new Student() { StudentId = 4, StudentName = "Ram" , Age = 20, StandardId =2 },
+            new Student() { StudentId = 5, StudentName = "Ron" , Age = 15 }
+        };
+
+        IList<Standard> standardList2 = new List<Standard>() {
+            new Standard(){ StandardId = 1, StandardName="Standard 1"},
+            new Standard(){ StandardId = 2, StandardName="Standard 2"},
+            new Standard(){ StandardId = 3, StandardName="Standard 3"}
+        };
+
+        var innerJoinQ =
+            from s in studentList2 // outer sequence
+            join st in standardList2 // inner sequence
+            on s.StandardId equals st.StandardId // Key selector
+            select new
+            {
+                StudentName = s.StudentName,
+                StandardName = st.StandardName
+            };
+
+        Console.WriteLine();
+        Console.WriteLine("Query Syntax");
+        foreach (var student in innerJoinQ)
+        {
+            Console.WriteLine($"{student.StudentName} {student.StandardName}");
+        }
+    }
+
+    private static void GroupBy()
+    {
+        // Same as GroupBy in SQL - Create a group of elements based on the given key
+        // IGrouping<TKey, TSource> TKey is key value, on which the group has been formed. TSource is the collection of elements that matches with the grouping key value
+
+        // ToLookup is the same as GroupBy except execute is not deferred. Not supported in query syntax
+
+        IList<Student> studentList = new List<Student>() {
+            new Student() { StudentId = 1, StudentName = "John", Age = 18 } ,
+            new Student() { StudentId = 2, StudentName = "Steve",  Age = 21 } ,
+            new Student() { StudentId = 3, StudentName = "Bill",  Age = 18 } ,
+            new Student() { StudentId = 4, StudentName = "Ram" , Age = 20 } ,
+            new Student() { StudentId = 5, StudentName = "Abram" , Age = 21 }
+        };
+
+        // Group by query Syntax
+        var groupResult =
+            from student in studentList
+            group student by student.Age;
+
+        // Iterate each group
+        foreach (var ageGroup in groupResult)
+        {
+            Console.WriteLine($"Age Group: {ageGroup.Key}");
+            foreach (var student in ageGroup)
+            {
+                Console.WriteLine(student.ToString());
+            }
+        }
+
+        Console.WriteLine();
+        Console.WriteLine("Fluent:");
+        var groupResultF = studentList.GroupBy(s => s.Age);
+        // Iterate each group
+        foreach (var ageGroup in groupResultF)
+        {
+            Console.WriteLine($"Age Group: {ageGroup.Key}");
+            foreach (var student in ageGroup)
+            {
+                Console.WriteLine(student.ToString());
+            }
+        }
+
+        Console.WriteLine();
+        Console.WriteLine("ToLookup:");
+        var lookupResult = studentList.ToLookup(s => s.Age);
+        foreach (var ageGroup in lookupResult)
+        {
+            Console.WriteLine($"Age Group: {ageGroup.Key}");
+            foreach (var student in ageGroup)
+            {
+                Console.WriteLine(student.ToString());
+            }
+        }
+
+        /*
+         * When to Use Which
+           Use ToLookup when you want a convenient way to access groups using keys and when you need fast lookup based on keys. Use GroupBy when you need more flexibility and want to perform 
+           operations on the groups themselves, or when you don't need the constant-time lookup behavior provided by ToLookup.
+
+          Remember that ToLookup creates a data structure optimized for fast lookups, while GroupBy provides more flexibility at the cost of slightly slower performance when accessing groups.
+        */
+
+    }
+
+    private static void ThenBy()
+    {
+        // ThenBy and ThenByDescending are used for sorting on multiple fields
+        IList<Student> studentList = new List<Student>() {
+            new Student() { StudentId = 1, StudentName = "John", Age = 18 } ,
+            new Student() { StudentId = 2, StudentName = "Steve",  Age = 15 } ,
+            new Student() { StudentId = 3, StudentName = "Bill",  Age = 25 } ,
+            new Student() { StudentId = 4, StudentName = "Ram" , Age = 20 } ,
+            new Student() { StudentId = 5, StudentName = "Ron" , Age = 19 },
+            new Student() { StudentId = 6, StudentName = "Ram" , Age = 18 }
+        };
+
+        var thenByResult = studentList.OrderBy(s => s.StudentName).ThenBy(s => s.Age);
+        var thenByDescendingResult = studentList.OrderBy(s => s.StudentName).ThenByDescending(s => s.Age);
+
+        foreach (var student in thenByResult)
+        {
+            Console.WriteLine(student.ToString());
+        }
+    }
 
     private static void OrderBy()
     {
@@ -41,7 +223,7 @@ internal class Program
         var studentDescOrder = studentList.OrderByDescending(s => s.StudentName);
 
         /*
-         * You can sort the collection on multiple fields seperated by comma. 
+         * You can sort the collection on multiple fields separated by comma. 
          * The given collection would be first sorted based on the first field and 
          * then if value of first field would be the same for two elements then it would use second field for sorting and so on.
          */
@@ -64,11 +246,10 @@ internal class Program
             Console.WriteLine(s);
         }
 
-        //Multiple sorting in method syntax works differently. Use ThenBy or ThenByDecending extension methods for secondary sorting.
-        // TODO: Add Example
+        //Multiple sorting in method syntax works differently. Use ThenBy or ThenByDescending extension methods for secondary sorting.
     }
 
-    private static void LinqOfType()
+    private static void OfType()
     {
         // Filter the collection based on the ability to cast an element in a collection to a specified type
         IList mixedList = new ArrayList();
@@ -79,7 +260,7 @@ internal class Program
         mixedList.Add(new Student() { StudentId = 1, StudentName = "Bill" });
 
         var stringResult = from s in mixedList.OfType<string>()
-                                           select s;    
+                           select s;
 
         var intResult =
             from s in mixedList.OfType<int>()
@@ -89,7 +270,7 @@ internal class Program
         var intResultF = mixedList.OfType<int>();
     }
 
-    private static void LinqWhere()
+    private static void Where()
     {
         // Where returns values from the collection based on a predicate function
         IList<Student> studentList = new List<Student>() {
@@ -121,13 +302,13 @@ internal class Program
             return false;
         });
 
-        foreach ( var student in filteredResult )
+        foreach (var student in filteredResult)
         {
-            Console.WriteLine( student );
+            Console.WriteLine(student);
         }
 
         // Multiple where clauses
-        var multiWhere = 
+        var multiWhere =
             from s in studentList
             where s.Age > 12
             where s.Age < 20
