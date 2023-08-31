@@ -1,0 +1,2 @@
+# LinqPlayground
+ Some LINQ Examples
