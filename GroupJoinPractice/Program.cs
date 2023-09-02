@@ -14,14 +14,16 @@ internal class Program
         var genders = GenderSource.GetAllGenders();
         var people = PersonSource.GetAllPeople();
 
-        var genderGrouped = genders.GroupJoin( // Outer Sequence (genders) - Sequence to "group by"
-            people, // Inner Sequence - Elements of this sequence are "grouped" (into gender groups here)
-            g => g.GenderId, // Outer Key Selector
-            p => p.GenderId, // Inner Key Selector
-            (gender, peopleGroup) => new { // Result Selector
-                Gender = gender.GenderName,
-                PeopleGroup = peopleGroup
-            });
+        var genderGrouped =
+            genders.GroupJoin( // Outer Sequence (genders) - Sequence to "group by"
+                people, // Inner Sequence - Elements of this sequence are "grouped" (into gender groups here)
+                g => g.GenderId, // Outer Key Selector
+                p => p.GenderId, // Inner Key Selector
+                (gender, peopleGroup) => new
+                { // Result Selector
+                    Gender = gender.GenderName,
+                    PeopleGroup = peopleGroup
+                });
 
         foreach (var peopleGroup in genderGrouped)
         {

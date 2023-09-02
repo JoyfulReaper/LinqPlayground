@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GroupJoinPractice", "GroupJ
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "Common\Common.csproj", "{EDEBC0C2-3F37-4031-ADB9-A5870FE92094}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JoinPractice", "JoinPractice\JoinPractice.csproj", "{256CF417-22AF-4D04-9BA8-71171E3CA290}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{EDEBC0C2-3F37-4031-ADB9-A5870FE92094}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EDEBC0C2-3F37-4031-ADB9-A5870FE92094}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EDEBC0C2-3F37-4031-ADB9-A5870FE92094}.Release|Any CPU.Build.0 = Release|Any CPU
+		{256CF417-22AF-4D04-9BA8-71171E3CA290}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{256CF417-22AF-4D04-9BA8-71171E3CA290}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{256CF417-22AF-4D04-9BA8-71171E3CA290}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{256CF417-22AF-4D04-9BA8-71171E3CA290}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
