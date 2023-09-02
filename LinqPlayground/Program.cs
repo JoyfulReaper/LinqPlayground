@@ -15,7 +15,75 @@ internal class Program
         //OrderBy();
         //ThenBy();
         //GroupBy();
-        Join();
+        //Join();
+        GroupJoin();
+    }
+
+    private static void GroupJoin()
+    {
+        // Performs the same task as join, except that GroupJoin returns the results in a group based on a specified group key.
+        // Joins two sequences based on a key and groups the result by matching the key and then returns the collection of grouped results and keys.
+
+        IList<Student> studentList = new List<Student>() {
+            new Student() { StudentId = 1, StudentName = "John", StandardId =1 },
+            new Student() { StudentId = 2, StudentName = "Moin", StandardId =1 },
+            new Student() { StudentId = 3, StudentName = "Bill", StandardId =2 },
+            new Student() { StudentId = 4, StudentName = "Ram",  StandardId =2 },
+            new Student() { StudentId = 5, StudentName = "Ron" }
+        };
+
+        IList<Standard> standardList = new List<Standard>() {
+            new Standard(){ StandardId = 1, StandardName="Standard 1"},
+            new Standard(){ StandardId = 2, StandardName="Standard 2"},
+            new Standard(){ StandardId = 3, StandardName="Standard 3"}
+        };
+
+        // GroupJoin: Groups the inner sequence (studentList) into studentGroup based on matching StandardId keys.
+        // This operation creates a collection of grouped results where students are grouped into different standards by their StandardId.
+        // Each group represents a unique StandardId and includes a collection of matching students and the StandardName.
+
+        // GroupJoin: Groups the inner sequence (students) into studentGroup whose StandardId matches with std.StandardId
+        // This operation groups the inner sequence (students) into groups based on matching keys (StandardId) and returns a collection of grouped results.
+        // The students are grouped into different standards by their StandardId, creating a new group for each unique StandardId.
+        var groupJoin = standardList.GroupJoin(// outer sequence (standardList)
+            studentList,                                       // Inner sequence
+            std => std.StandardId,                     // outer key selector
+            s => s.StandardId,                         // inner key selector
+            (std, studentGroup) => new // Result selector
+            {
+                Students = studentGroup,
+                StandardFullName = std.StandardName
+            });
+
+        foreach (var item in groupJoin)
+        {
+            Console.WriteLine(item.StandardFullName);
+            foreach (var student in item.Students)
+            {
+                Console.WriteLine(student.StudentName);
+            }
+        }
+
+        // Group the inner sequence (standardList) into standardGroup whose StandardId matches with s.StandardId
+        var groupJoin2 = studentList.GroupJoin(// outer sequence (studentList)
+            standardList, // Inner sequence
+            std => std.StandardId, // outer key selector
+            s => s.StandardId, // inner key selector
+            (std, standardGroup) => new // Result selector
+            {
+                Standards = standardGroup,
+                StudentName = std.StudentName
+            });
+
+        Console.WriteLine();
+        foreach (var item in groupJoin2)
+        {
+            Console.WriteLine(item.StudentName);
+            foreach (var standard in item.Standards)
+            {
+                Console.WriteLine(standard.StandardName);
+            }
+        }
     }
 
     private static void Join()

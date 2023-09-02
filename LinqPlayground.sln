@@ -3,7 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34004.107
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinqPlayground", "LinqPlayground\LinqPlayground.csproj", "{C4C2DB4B-4E8F-4742-8B72-01AEFCDAA9E6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LinqPlayground", "LinqPlayground\LinqPlayground.csproj", "{C4C2DB4B-4E8F-4742-8B72-01AEFCDAA9E6}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GroupJoinPractice", "GroupJoinPractice\GroupJoinPractice.csproj", "{355461F5-62A8-479C-9913-9C4D0D8DD0BF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "Common\Common.csproj", "{EDEBC0C2-3F37-4031-ADB9-A5870FE92094}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +19,14 @@ Global
 		{C4C2DB4B-4E8F-4742-8B72-01AEFCDAA9E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C4C2DB4B-4E8F-4742-8B72-01AEFCDAA9E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C4C2DB4B-4E8F-4742-8B72-01AEFCDAA9E6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{355461F5-62A8-479C-9913-9C4D0D8DD0BF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{355461F5-62A8-479C-9913-9C4D0D8DD0BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{355461F5-62A8-479C-9913-9C4D0D8DD0BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{355461F5-62A8-479C-9913-9C4D0D8DD0BF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EDEBC0C2-3F37-4031-ADB9-A5870FE92094}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EDEBC0C2-3F37-4031-ADB9-A5870FE92094}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EDEBC0C2-3F37-4031-ADB9-A5870FE92094}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EDEBC0C2-3F37-4031-ADB9-A5870FE92094}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
