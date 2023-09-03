@@ -84,6 +84,28 @@ internal class Program
                 Console.WriteLine(standard.StandardName);
             }
         }
+
+        // Group join Query Syntax
+        var groupJoinQ =
+            from std in standardList
+            join s in studentList
+                on std.StandardId equals s.StandardId
+            into studentGroup
+            select new
+            {
+                Students = studentGroup,
+                StandardName = std.StandardName
+            };
+
+        Console.WriteLine();
+        foreach (var item in groupJoinQ)
+        {
+            Console.WriteLine(item.StandardName);
+            foreach (var student in item.Students)
+            {
+                Console.WriteLine(student.StudentName);
+            }
+        }
     }
 
     private static void Join()
