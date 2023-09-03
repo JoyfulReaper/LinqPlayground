@@ -1,8 +1,8 @@
 ﻿//https://www.tutorialsteacher.com/linq/what-is-linq
 
+using Common.DemoClasses;
 using LinqPlayground.ExampleClasses;
 using System.Collections;
-using System.Threading.Tasks.Dataflow;
 
 internal class Program
 {
@@ -16,7 +16,76 @@ internal class Program
         //ThenBy();
         //GroupBy();
         //Join();
-        GroupJoin();
+        //GroupJoin();
+        //Select();
+        SelectMany();
+    }
+
+    private static void SelectMany()
+    {
+        // SelectMany operator projects sequences of values that are based on a transform function and then flattens them into one sequence
+        List<Bouquet> bouquets = new()
+        {
+            new Bouquet { Flowers = new List<string> { "sunflower", "daisy", "daffodil", "larkspur" }},
+            new Bouquet { Flowers = new List<string> { "tulip", "rose", "orchid" }},
+            new Bouquet { Flowers = new List<string> { "gladiolis", "lily", "snapdragon", "aster", "protea" }},
+            new Bouquet { Flowers = new List<string> { "larkspur", "lilac", "iris", "dahlia" }}
+        };
+
+        // IEnumerable of List of Strings
+        var select = bouquets.Select(bq => bq.Flowers);
+
+        // IEnumerable of strings - source lists were flattened
+        var selectMany = bouquets.SelectMany(bq => bq.Flowers);
+
+        // Select
+        int i = 1;
+        foreach(var bq in select)
+        {
+            Console.WriteLine($"Bouquet {i++}: ");
+            foreach (var flower in bq)
+            {
+                Console.WriteLine($"Flower: {flower}");
+            }
+        }
+
+        // SelectMany
+        Console.WriteLine($"{Environment.NewLine}Flattened with SelectMany");
+        foreach(var flower in selectMany)
+        {
+            Console.WriteLine($"Flower: {flower}");
+        }
+    }
+
+    private static void Select()
+    {
+        // Select - Projection operator - Returns an IEnumerable collection which contains elements based on a transformation function
+        IList<Student> studentList = new List<Student>() {
+            new Student() { StudentId = 1, StudentName = "John", Age = 13 } ,
+            new Student() { StudentId = 2, StudentName = "Moin",  Age = 21 } ,
+            new Student() { StudentId = 3, StudentName = "Bill",  Age = 18 } ,
+            new Student() { StudentId = 4, StudentName = "Ram" , Age = 20 } ,
+            new Student() { StudentId = 5, StudentName = "Ron" , Age = 15 }
+        };
+
+        var selectResult = from s in studentList
+                           select s.StudentName;
+
+        // Select operator can be used to formulate the result as per our requirements. Can be used to return a collection of a custom class or anonymous object.
+        var selectResult2 =
+            from s in studentList
+            select new { Name = "Mr. " + s.StudentName, Age = s.Age };
+
+        foreach (var item in selectResult2)
+        {
+            Console.WriteLine("Student Name: {0}, Age: {1}", item.Name, item.Age);
+        }
+
+        // Method Syntax
+        var selectResultM = studentList.Select(s => new {
+            Name = s.StudentName,
+            Age = s.Age
+        });
     }
 
     private static void GroupJoin()
