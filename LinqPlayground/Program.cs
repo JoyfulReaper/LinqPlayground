@@ -3,6 +3,8 @@
 using Common.DemoClasses;
 using LinqPlayground.ExampleClasses;
 using System.Collections;
+using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 
 internal class Program
 {
@@ -18,7 +20,101 @@ internal class Program
         //Join();
         //GroupJoin();
         //Select();
-        SelectMany();
+        //SelectMany();
+        //AllAny();
+        //Contains();
+        Aggregate();
+    }
+
+    private static void Aggregate()
+    {
+        // Aggregation operators perform mathematical operations like Average, Count, Max, Min, Sum
+        // Aggregate method performs an accumulate operation
+
+        /*
+         * first item of strList "One" will be pass as s1 and rest of the items will be passed as s2.
+         * The lambda expression (s1, s2) => s1 + ", " + s2 will be treated like s1 = s1 + ", " + s1 where s1 will be accumulated for each item in the collection.
+         * Thus, Aggregate method will return comma separated string.
+         * */
+        IList<string> strList = new List<string>() { "One", "Two", "Three", "Four", "Five" };
+        var commaSeparated = strList.Aggregate((s1, s2) => s1 + ", " + s2); // Apply an accumulator over a sequence
+        Console.WriteLine(commaSeparated);
+
+        // Aggregate Method with Seed Value
+        // Student collection
+        IList<Student> studentList = new List<Student>() {
+            new Student() { StudentId = 1, StudentName = "John", Age = 13 } ,
+            new Student() { StudentId = 2, StudentName = "Moin", Age = 21 } ,
+            new Student() { StudentId = 3, StudentName = "Bill", Age = 18 } ,
+            new Student() { StudentId = 4, StudentName = "Ram", Age = 20 } ,
+            new Student() { StudentId = 5, StudentName = "Ron", Age = 15 }
+        };
+        string seededCommaSeparated = studentList.Aggregate<Student, string>(
+            "Student Names: ", // Seed
+            (str, s) => str += s.StudentName + ",");
+        Console.WriteLine(seededCommaSeparated);
+
+        int sumOfStudentAges = studentList.Aggregate<Student, int>(0,
+            (totalAge, s) => totalAge += s.Age);
+        Console.WriteLine(sumOfStudentAges);
+
+        // Aggregate Method with Result Selector
+        string commaSeparatedWResultSelector = studentList.Aggregate<Student, string, string>(
+            String.Empty, // Seed Value
+            (str, s) => str += s.StudentName + ",", // returns result using seed value, String.Empty goes to lambda expression as str
+            str => str.Substring(0, str.Length - 1)); // result selector that removes last comma
+
+        Console.WriteLine(commaSeparatedWResultSelector);
+    }
+
+    private static void Contains()
+    {
+        // Contains operator checks whether a specified element exists in the collection or not, returning a boolean
+        //An overload that accepts an IEqualityComparer also exists
+
+        // Will work with primatives only
+        IList<int> intList = new List<int>() { 1, 2, 3, 4, 5 };
+        bool contains10 = intList.Contains(10);
+
+        IList<Student> studentList = new List<Student>() {
+            new Student() { StudentId = 1, StudentName = "John", Age = 18 } ,
+            new Student() { StudentId = 2, StudentName = "Steve",  Age = 15 } ,
+            new Student() { StudentId = 3, StudentName = "Bill",  Age = 25 } ,
+            new Student() { StudentId = 4, StudentName = "Ram" , Age = 20 } ,
+            new Student() { StudentId = 5, StudentName = "Ron" , Age = 19 }
+        };
+
+        // Will not work since Student is not a primative - Reference is compared
+        Student std = new Student() { StudentId = 3, StudentName = "Bill" };
+        bool result = studentList.Contains(std); //returns false
+        Console.WriteLine($"No Comparer - Contains? {result}");
+
+        // For this to work need to create a class that implements the IEqualityComparer interface:
+        bool comparerResult = studentList.Contains(std, new StudentComparer());
+        Console.WriteLine($"With Comparer - Contains? {comparerResult}");
+    }       
+
+    private static void AllAny()
+    {
+        // All, Any, Contains are Quantifier Operators - Evaluate elements of a sequence on some condition and return a boolean value
+        // to indicate that some or all elements satisfy the condition. Quantifier Operators are not supported in query syntax
+
+        // All operator evaluates each element in the given collection on a specified condition and returns true if all the elements
+        // satisfy the condition
+
+        IList<Student> studentList = new List<Student>() {
+            new Student() { StudentId = 1, StudentName = "John", Age = 18 } ,
+            new Student() { StudentId = 2, StudentName = "Steve",  Age = 15 } ,
+            new Student() { StudentId = 3, StudentName = "Bill",  Age = 25 } ,
+            new Student() { StudentId = 4, StudentName = "Ram" , Age = 20 } ,
+            new Student() { StudentId = 5, StudentName = "Ron" , Age = 19 }
+        };
+
+        bool allStudentsAreTeens = studentList.All(s => s.Age > 12 && s.Age < 20);
+        Console.WriteLine($"All students are teens: {allStudentsAreTeens}");
+
+        bool anyStudentsAreTeens = studentList.Any(s => s.Age > 12 && s.Age < 20);
+        Console.WriteLine($"Any students are teens: {anyStudentsAreTeens}");
     }
 
     private static void SelectMany()
